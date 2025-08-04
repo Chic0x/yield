@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HyperYield - Advanced DeFi Yield Farming</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1d3a 50%, #2d1b69 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1rem 2rem;
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #00d4ff, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav a:hover {
+            color: #00d4ff;
+        }
+
+        .connect-btn {
+            background: linear-gradient(45deg, #00d4ff, #7c3aed);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .connect-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 212, 255, 0.3);
+        }
+
+        .hero {
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, #ffffff, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: #a1a1aa;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 4rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #00d4ff, #7c3aed);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            border-color: #00d4ff;
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+            padding: 0 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 212, 255, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #00d4ff;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #a1a1aa;
+            font-weight: 500;
+        }
+
+        .pools {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pools h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            background: linear-gradient(45deg, #ffffff, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .pool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .pool-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .pool-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 212, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.1);
+        }
+
+        .pool-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .pool-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .pool-apy {
+            background: linear-gradient(45deg, #10b981, #059669);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .pool-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .pool-info-item {
+            text-align: center;
+        }
+
+        .pool-info-label {
+            color: #a1a1aa;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .pool-info-value {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .pool-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .pool-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pool-btn.stake {
+            background: linear-gradient(45deg, #00d4ff, #7c3aed);
+            color: white;
+        }
+
+        .pool-btn.unstake {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .pool-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .features {
+            padding: 4rem 2rem;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            background: linear-gradient(45deg, #ffffff, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .feature-icon {
+            width: 4rem;
+            height: 4rem;
+            background: linear-gradient(45deg, #00d4ff, #7c3aed);
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .feature-description {
+            color: #a1a1aa;
+            line-height: 1.6;
+        }
+
+        .footer {
+            padding: 3rem 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 4rem;
+        }
+
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(45deg, rgba(0, 212, 255, 0.1), rgba(124, 58, 237, 0.1));
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-circle:nth-child(1) {
+            width: 100px;
+            height: 100px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-circle:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .floating-circle:nth-child(3) {
+            width: 80px;
+            height: 80px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav {
+                display: none;
+            }
+            
+            .pool-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-elements">
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+    </div>
+
+    <header class="header">
+        <div class="logo">HyperYield</div>
+        <nav class="nav">
+            <a href="#pools">Pools</a>
+            <a href="#features">Features</a>
+            <a href="#docs">Docs</a>
+            <a href="#governance">Governance</a>
+        </nav>
+        <button class="connect-btn" id="connectWallet">Connect Wallet</button>
+    </header>
+
+    <section class="hero">
+        <h1>Maximize Your DeFi Returns</h1>
+        <p>Advanced yield farming strategies powered by automated optimization algorithms. Earn up to 200% APY on your crypto assets through our battle-tested protocols.</p>
+        <div class="cta-buttons">
+            <button class="btn-primary">Start Farming</button>
+            <button class="btn-secondary">View Documentation</button>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="stat-card">
+            <div class="stat-number">$2.4B</div>
+            <div class="stat-label">Total Value Locked</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">180%</div>
+            <div class="stat-label">Average APY</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">45,000+</div>
+            <div class="stat-label">Active Farmers</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">99.9%</div>
+            <div class="stat-label">Uptime</div>
+        </div>
+    </section>
+
+    <section class="pools" id="pools">
+        <h2>Active Yield Pools</h2>
+        <div class="pool-grid">
+            <div class="pool-card">
+                <div class="pool-header">
+                    <div class="pool-name">ETH-USDC LP</div>
+                    <div class="pool-apy">185% APY</div>
+                </div>
+                <div class="pool-info">
+                    <div class="pool-info-item">
+                        <div class="pool-info-label">TVL</div>
+                        <div class="pool-info-value">$450M</div>
+                    </div>
+                    <div class="pool-info-item">
+                        <div class="pool-info-label">Your Balance</div>
+                        <div class="pool-info-value">0.00 LP</div>
+                    </div>
+                    <div class="pool-info-item">
+                        <div class="pool-info-label">Rewards</div>
+                        <div class="pool-info-value">HYPER + ETH</div>
+                    </div>
+                    <div class="pool-info-item">
+                        <div class="pool-info-label">Lock Period</div>
+                        <div class="pool-info-value">30 Days</div>
+                    </div>
+                </div>
+                <div class="pool-actions">
+                    <button class="pool-btn stake">Stake LP</button>
+                    <button class="pool-btn unstake">Unstake</button>
+                </div>
+            </div>
+
+            <div class="pool-card">
+                <div class="pool-header">
+                    <div class="pool-name">BTC-WBTC</div>
+                    <div class="pool-apy">210% APY</div>
+                </div>
+                <div class="pool-info">
+                    <div class="pool-info-item">
+                        <div class="pool-info-label">TVL</div>
+                        <div class="pool-info-value">$320M</div>
+                    </div>
+                    <div class="pool-info-item">
+                        <div class="pool-info-label">Your Balance</div>
+                        <div class="pool-info-value">0.00 LP</div>
+                    </div>
+                    <div class="pool-info-item">
+                        <div class="pool-info-label">Rewards</div>
+                        <div class="pool-info-value">HYPER + BTC</div>
+                    </div>
+                    <div class="pool-info-item">
+                        <div class="pool-info-label">Lock Period</div>
+                        <div class="pool-info-value">60 Days</div>
+                    </div>
+                </div>
+                <div class="pool-actions">
+                    <button class="pool-btn stake">Stake LP</button>
+                    <button class="pool-btn unstake">Unstake</button>
+                </div>
+            </div>
+
+            <div class="pool-card">
+                <div class="pool-header">
+                    <div class="pool-name">HYPER Staking</div>
+                    <div class="pool-apy">95% APY</div>
+                </div>
+                <div class="pool-info">
+                    <div class="pool-info-item">
+                        <div class="pool-info-label">TVL</div>
+                        <div class="pool-info-value">$180M</div>
+                    </div>
+                    <div class="pool-info-item">
+                        <div class="pool-info-label">Your Balance</div>
+                        <div class="pool-info-value">0.00 HYPER</div>
+                    </div>
+                    <div class="pool-info-item">
+                        <div class="pool-info-label">Rewards</div>
+                        <div class="pool-info-value">HYPER</div>
+                    </div>
+                    <div class="pool-info-item">
+                        <div class="pool-info-label">Lock Period</div>
+                        <div class="pool-info-value">Flexible</div>
+                    </div>
+                </div>
+                <div class="pool-actions">
+                    <button class="pool-btn stake">Stake HYPER</button>
+                    <button class="pool-btn unstake">Unstake</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="features-container">
+            <h2>Why Choose HyperYield?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <div class="feature-title">Audited Security</div>
+                    <div class="feature-description">Multiple security audits by leading firms ensure your funds are protected with institutional-grade security measures.</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <div class="feature-title">Auto-Compound</div>
+                    <div class="feature-description">Automated compounding strategies maximize your returns by reinvesting rewards at optimal intervals.</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-title">Real-Time Analytics</div>
+                    <div class="feature-description">Advanced analytics dashboard provides deep insights into your farming performance and market opportunities.</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🏆</div>
+                    <div class="feature-title">Optimized Strategies</div>
+                    <div class="feature-description">AI-powered yield optimization algorithms automatically select the best farming strategies for maximum returns.</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <div class="feature-title">Cross-Chain</div>
+                    <div class="feature-description">Seamlessly farm across multiple blockchains including Ethereum, Polygon, and Binance Smart Chain.</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👥</div>
+                    <div class="feature-title">Community Governed</div>
+                    <div class="feature-description">Decentralized governance allows token holders to vote on protocol upgrades and new farming strategies.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2025 HyperYield Protocol. All rights reserved.</p>
+        <p>Audit Reports | Documentation | Discord | Twitter</p>
+    </footer>
+
+    <script>
+        // Wallet connection simulation
+        const connectButton = document.getElementById('connectWallet');
+        let isConnected = false;
+
+        connectButton.addEventListener('click', function() {
+            if (!isConnected) {
+                // Simulate wallet connection
+                setTimeout(() => {
+                    connectButton.textContent = '0x1234...5678';
+                    connectButton.style.background = 'rgba(16, 185, 129, 0.2)';
+                    connectButton.style.border = '1px solid #10b981';
+                    isConnected = true;
+                    
+                    // Update pool balances with mock data
+                    const balances = document.querySelectorAll('.pool-info-value');
+                    balances[1].textContent = '12.45 LP';
+                    balances[5].textContent = '8.92 LP';
+                    balances[9].textContent = '1,250 HYPER';
+                }, 1000);
+            } else {
+                // Disconnect
+                connectButton.textContent = 'Connect Wallet';
+                connectButton.style.background = 'linear-gradient(45deg, #00d4ff, #7c3aed)';
+                connectButton.style.border = 'none';
+                isConnected = false;
+                
+                // Reset balances
+                const balances = document.querySelectorAll('.pool-info-value');
+                balances[1].textContent = '0.00 LP';
+                balances[5].textContent = '0.00 LP';
+                balances[9].textContent = '0.00 HYPER';
+            }
+        });
+
+        // Pool interaction handlers
+        document.querySelectorAll('.pool-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (!isConnected) {
+                    alert('Please connect your wallet first');
+                    return;
+                }
+                
+                const action = this.classList.contains('stake') ? 'Stake' : 'Unstake';
+                const poolName = this.closest('.pool-card').querySelector('.pool-name').textContent;
+                alert(`${action} modal would open for ${poolName} pool`);
+            });
+        });
+
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Dynamic stats counter animation
+        function animateStats() {
+            const statNumbers = document.querySelectorAll('.stat-number');
+            const targets = ['$2.4B', '180%', '45,000+', '99.9%'];
+            
+            statNumbers.forEach((stat, index) => {
+                let current = 0;
+                const target = targets[index];
+                const increment = target.includes('$') ? 50000000 : 
+                                target.includes('%') ? 3 : 750;
+                
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (target.includes('$')) {
+                        stat.textContent = `$${(current / 1000000000).toFixed(1)}B`;
+                        if (current >= 2400000000) clearInterval(timer);
+                    } else if (target.includes('%')) {
+                        stat.textContent = `${current}%`;
+                        if (current >= 180) clearInterval(timer);
+                    } else if (target.includes('+')) {
+                        stat.textContent = `${current.toLocaleString()}+`;
+                        if (current >= 45000) clearInterval(timer);
+                    } else {
+                        stat.textContent = `${(current / 1000).toFixed(1)}%`;
+                        if (current >= 999) {
+                            stat.textContent = '99.9%';
+                            clearInterval(timer);
+                        }
+                    }
+                }, 50);
+            });
+        }
+
+        // Trigger animation when stats come into view
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateStats();
+                    observer.disconnect();
+                }
+            });
+        });
+
+        observer.observe(document.querySelector('.stats'));
+    </script>
+</body>
+</html>
